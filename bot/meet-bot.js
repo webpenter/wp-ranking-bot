@@ -36,34 +36,31 @@ export async function runMeetingBot({
   let browser;
   try {
     browser = await puppeteer.launch({
-      headless: 'new', // Modern headless mode
+      headless: false, // Launch visible or background browser without Google bot block
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
         '--disable-gpu',
         '--use-fake-ui-for-media-stream',
         '--use-fake-device-for-media-stream',
         '--mute-audio',
         '--disable-blink-features=AutomationControlled',
+        '--window-size=1280,800',
       ],
       defaultViewport: { width: 1280, height: 800 },
     });
 
     const page = await browser.newPage();
 
-    // Block video stream and image bandwidth
-    await page.setRequestInterception(true);
-    page.on('request', (req) => {
-      const resourceType = req.resourceType();
-      if (resourceType === 'image' || resourceType === 'media' || resourceType === 'font') {
-        req.abort();
-      } else {
-        req.continue();
-      }
+    // Set real desktop User Agent to prevent Google Meet redirecting to marketing page
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+    );
+
+    // Evade webdriver detection
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
     });
 
     // Grant camera and microphone permissions automatically
@@ -73,34 +70,53 @@ export async function runMeetingBot({
     console.log('[Bot] Navigating to Google Meet room...');
     await page.goto(meetUrl, { waitUntil: 'networkidle2', timeout: 60000 });
 
-    // Wait for initial meet UI
-    await new Promise((r) => setTimeout(r, 4000));
+    // Wait 3s for Google Meet pre-join screen to stabilize
+    await new Promise((r) => setTimeout(r, 3000));
 
-    // Fill bot name in the name input field if present
+    // Turn off camera & mic using Google Meet native hotkeys (Ctrl + E and Ctrl + D)
     try {
-      const nameInputSelector = 'input[type="text"], input[aria-label*="name" i]';
-      const nameInput = await page.$(nameInputSelector);
+      await page.keyboard.down('Control');
+      await page.keyboard.press('KeyD'); // Mute Mic
+      await page.keyboard.press('KeyE'); // Turn off Camera
+      await page.keyboard.up('Control');
+      console.log('[Bot] Muted microphone and turned off camera via shortcuts.');
+    } catch (e) {}
+
+    await new Promise((r) => setTimeout(r, 1500));
+
+    // Fill bot name in the name input field if present (for non-signed-in guests)
+    try {
+      const nameInput = await page.$('input[type="text"], input[aria-label*="name" i], input[placeholder*="name" i]');
       if (nameInput) {
-        await nameInput.type(botName, { delay: 50 });
+        await nameInput.click({ clickCount: 3 });
+        await nameInput.type(botName, { delay: 30 });
         console.log(`[Bot] Entered name: ${botName}`);
       }
-    } catch (e) {
-      // Ignore if signed-in or no name input
-    }
+    } catch (e) {}
 
-    // Click "Ask to join" or "Join now"
+    await new Promise((r) => setTimeout(r, 1500));
+
+    // Click "Join now" or "Ask to join" button
     try {
-      const joinButtons = await page.$$('button');
-      for (const btn of joinButtons) {
-        const text = await page.evaluate((el) => el.innerText || el.getAttribute('aria-label') || '', btn);
-        if (/ask to join|join now|join meeting/i.test(text)) {
-          await btn.click();
-          console.log('[Bot] Clicked Join button!');
-          break;
+      const clicked = await page.evaluate(() => {
+        const buttons = Array.from(document.querySelectorAll('button, span[role="button"], div[role="button"]'));
+        for (const btn of buttons) {
+          const text = (btn.innerText || btn.textContent || btn.getAttribute('aria-label') || '').trim().toLowerCase();
+          if (text === 'join now' || text === 'ask to join' || text.includes('join now') || text.includes('ask to join') || text === 'join') {
+            btn.click();
+            return true;
+          }
         }
+        return false;
+      });
+
+      if (clicked) {
+        console.log('[Bot] Clicked Join button!');
+      } else {
+        console.log('[Bot] Join button search completed (might be auto-admitted).');
       }
     } catch (e) {
-      console.log('[Bot] Join button search completed.');
+      console.log('[Bot] Join button search error:', e.message);
     }
 
     // Wait 5s for room entry
@@ -108,14 +124,18 @@ export async function runMeetingBot({
 
     // Attempt to open the "People" panel so all participants DOM is visible
     try {
-      const peopleButtons = await page.$$('button[aria-label*="people" i], button[aria-label*="everyone" i], button[aria-label*="participants" i]');
-      if (peopleButtons.length > 0) {
-        await peopleButtons[0].click();
-        console.log('[Bot] Opened People panel.');
-      }
-    } catch (e) {
-      // Panel might already be open
-    }
+      await page.evaluate(() => {
+        const buttons = Array.from(document.querySelectorAll('button, div[role="button"]'));
+        for (const btn of buttons) {
+          const aria = (btn.getAttribute('aria-label') || btn.innerText || '').toLowerCase();
+          if (aria.includes('people') || aria.includes('everyone') || aria.includes('participants') || aria.includes('show everyone')) {
+            btn.click();
+            break;
+          }
+        }
+      });
+      console.log('[Bot] Requested People panel toggle.');
+    } catch (e) {}
 
     console.log('[Bot] 👁️ Live Attendance Tracking Started...');
 
@@ -186,4 +206,12 @@ export async function runMeetingBot({
       } catch (e) {}
     }
   }
+}
+
+// Auto-run if executed directly via node
+if (process.argv[1] && process.argv[1].includes('meet-bot.js')) {
+  const meetUrl = process.argv[2] || process.env.MEET_URL || 'https://meet.google.com/jns-arbs-nyv';
+  const duration = parseInt(process.argv[3] || '35', 10);
+  console.log(`[Bot Runner] Starting meeting bot for: ${meetUrl} (${duration} mins)`);
+  runMeetingBot({ meetUrl, durationMinutes: duration });
 }
