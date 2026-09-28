@@ -17,6 +17,7 @@ import { AuditTrailView } from './components/AuditTrailView';
 import { EmployeeProfileModal } from './components/EmployeeProfileModal';
 import { ManualCorrectionModal } from './components/ManualCorrectionModal';
 import { SlackShareModal } from './components/SlackShareModal';
+import { AdminAuthModal } from './components/AdminAuthModal';
 
 export const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -25,6 +26,13 @@ export const App: React.FC = () => {
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
+
+  // Admin Security / Viewer Mode
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    return typeof window !== 'undefined' && sessionStorage.getItem('wp_is_admin') === 'true';
+  });
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [pendingTab, setPendingTab] = useState<'settings' | 'audit' | null>(null);
 
   // Navigation
   const [currentTab, setCurrentTab] = useState<'weekly' | 'daily' | 'monthly' | 'settings' | 'audit'>('weekly');
@@ -210,6 +218,38 @@ export const App: React.FC = () => {
     });
   };
 
+  // Admin handlers
+  const handleToggleAdmin = () => {
+    if (isAdmin) {
+      sessionStorage.removeItem('wp_is_admin');
+      setIsAdmin(false);
+      if (currentTab === 'settings' || currentTab === 'audit') {
+        setCurrentTab('weekly');
+      }
+    } else {
+      setIsAuthModalOpen(true);
+    }
+  };
+
+  const handleAuthSuccess = () => {
+    sessionStorage.setItem('wp_is_admin', 'true');
+    setIsAdmin(true);
+    setIsAuthModalOpen(false);
+    if (pendingTab) {
+      setCurrentTab(pendingTab);
+      setPendingTab(null);
+    }
+  };
+
+  const handleTabChange = (tab: 'weekly' | 'daily' | 'monthly' | 'settings' | 'audit') => {
+    if ((tab === 'settings' || tab === 'audit') && !isAdmin) {
+      setPendingTab(tab);
+      setIsAuthModalOpen(true);
+      return;
+    }
+    setCurrentTab(tab);
+  };
+
   // Profile modal data
   const selectedEmployee = employees.find((e) => e.id === selectedEmployeeId) || null;
   const selectedEmpRanking = weeklyRankings.find((r) => r.employee.id === selectedEmployeeId) || null;
@@ -219,7 +259,7 @@ export const App: React.FC = () => {
       {/* App Header */}
       <Header
         currentTab={currentTab}
-        onTabChange={setCurrentTab}
+        onTabChange={handleTabChange}
         selectedWeekKey={selectedWeekKey}
         onWeekChange={setSelectedWeekKey}
         availableWeeks={availableWeeks}
@@ -228,6 +268,8 @@ export const App: React.FC = () => {
         availableMonths={availableMonths}
         settings={settings}
         onOpenSlackShare={handleOpenWeeklySlack}
+        isAdmin={isAdmin}
+        onToggleAdmin={handleToggleAdmin}
       />
 
       {/* Main Content */}
@@ -251,8 +293,16 @@ export const App: React.FC = () => {
             recordsInWeek={recordsInWeek}
             employees={employees}
             settings={settings}
+            isAdmin={isAdmin}
             onSendSlackReport={handleOpenDailySlack}
-            onManualEdit={(rec, emp, meet) => setCorrectionTarget({ record: rec, employee: emp, meeting: meet })}
+            onManualEdit={(rec, emp, meet) => {
+              if (isAdmin) {
+                setCorrectionTarget({ record: rec, employee: emp, meeting: meet });
+              } else {
+                setIsAuthModalOpen(true);
+              }
+            }}
+            onRequireAdmin={() => setIsAuthModalOpen(true)}
           />
         )}
 
@@ -262,8 +312,10 @@ export const App: React.FC = () => {
             monthlyRankings={monthlyRankings}
             settings={settings}
             monthLabel={currentMonthInfo.label}
+            isAdmin={isAdmin}
             onSendMonthlySlackReport={handleOpenMonthlySlack}
             onSelectEmployee={(empId) => setSelectedEmployeeId(empId)}
+            onRequireAdmin={() => setIsAuthModalOpen(true)}
           />
         )}
 
@@ -312,6 +364,16 @@ export const App: React.FC = () => {
         reportTitle={slackModalData.title}
         slackData={slackModalData.data}
         settings={settings}
+      />
+
+      <AdminAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          setPendingTab(null);
+        }}
+        onSuccess={handleAuthSuccess}
+        correctPin={settings.adminPin || 'webpenter2026'}
       />
     </div>
   );

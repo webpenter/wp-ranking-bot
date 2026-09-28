@@ -25,7 +25,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
   onExportData,
   onImportData,
 }) => {
-  const [currentSettingsTab, setCurrentSettingsTab] = useState<'standup' | 'eod' | 'leaderboard' | 'slack' | 'employees' | 'data'>('standup');
+  const [currentSettingsTab, setCurrentSettingsTab] = useState<'standup' | 'eod' | 'leaderboard' | 'slack' | 'employees' | 'security' | 'data'>('standup');
   const [formSettings, setFormSettings] = useState<Settings>(settings);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -172,6 +172,14 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
             }`}
           >
             👥 Team Management
+          </button>
+          <button
+            onClick={() => setCurrentSettingsTab('security')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
+              currentSettingsTab === 'security' ? 'bg-amber-600 text-white shadow' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            🔒 Security & PIN
           </button>
           <button
             onClick={() => setCurrentSettingsTab('data')}
@@ -700,6 +708,55 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: SECURITY & PIN */}
+          {currentSettingsTab === 'security' && (
+            <div className="space-y-6 max-w-xl">
+              <div>
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-2 flex items-center gap-2">
+                  <span>🔒</span> Administrator Access PIN
+                </h3>
+                <p className="text-xs text-slate-400 mb-4">
+                  By default, public visitors to the leaderboard URL operate in <strong>Viewer (Read-Only)</strong> mode.
+                  Entering this Admin PIN unlocks system settings, manual attendance adjustments, excused leave approvals, and Slack broadcast reports.
+                </p>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                      Admin Access PIN / Password
+                    </label>
+                    <input
+                      type="text"
+                      value={formSettings.adminPin || 'webpenter2026'}
+                      onChange={(e) =>
+                        setFormSettings({
+                          ...formSettings,
+                          adminPin: e.target.value,
+                        })
+                      }
+                      className="w-full sm:w-72 px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white font-mono tracking-wider focus:border-amber-500 focus:outline-none"
+                      placeholder="e.g. webpenter2026"
+                    />
+                    <span className="text-[11px] text-slate-500 mt-1 block">
+                      Default is <code className="text-amber-400">webpenter2026</code>. Click "Save Settings" below to apply changes.
+                    </span>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200/90 space-y-1">
+                    <div className="font-bold flex items-center gap-1.5">
+                      <span>💡</span> How Public Viewer Mode Works
+                    </div>
+                    <ul className="list-disc pl-4 space-y-1 text-slate-300">
+                      <li>Public team members opening the link can freely view weekly rankings, daily attendance logs, and monthly podiums.</li>
+                      <li>They cannot modify records or change settings unless they click the lock icon and enter the Admin PIN.</li>
+                      <li>Admin sessions are saved securely in the browser session.</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>

@@ -7,16 +7,20 @@ export interface MonthlyLeaderboardProps {
   monthlyRankings: MonthlyEmployeeRanking[];
   settings: Settings;
   monthLabel: string;
+  isAdmin: boolean;
   onSendMonthlySlackReport: () => void;
   onSelectEmployee: (empId: string) => void;
+  onRequireAdmin: () => void;
 }
 
 export const MonthlyLeaderboard: React.FC<MonthlyLeaderboardProps> = ({
   monthlyRankings,
   settings,
   monthLabel,
+  isAdmin,
   onSendMonthlySlackReport,
   onSelectEmployee,
+  onRequireAdmin,
 }) => {
   const top3Winners = monthlyRankings.filter((r) => r.isMonthlyWinner);
   const totalDeductions = monthlyRankings.reduce((sum, r) => sum + r.totalSalaryDeduction, 0);
@@ -41,13 +45,23 @@ export const MonthlyLeaderboard: React.FC<MonthlyLeaderboardProps> = ({
           </p>
         </div>
 
-        <button
-          onClick={onSendMonthlySlackReport}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-600/20 active:scale-95 shrink-0"
-        >
-          <IconSlack className="w-4 h-4" />
-          <span>Send Month-End Report to Slack</span>
-        </button>
+        {isAdmin ? (
+          <button
+            onClick={onSendMonthlySlackReport}
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-600/20 active:scale-95 shrink-0"
+          >
+            <IconSlack className="w-4 h-4" />
+            <span>Send Month-End Report to Slack</span>
+          </button>
+        ) : (
+          <button
+            onClick={onRequireAdmin}
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-400 hover:text-slate-200 text-xs font-medium border border-slate-700 transition shrink-0"
+            title="Click to enter Admin PIN and broadcast to Slack"
+          >
+            <span>🔒 Send to Slack</span>
+          </button>
+        )}
       </div>
 
       {/* Grand Champions Podium */}

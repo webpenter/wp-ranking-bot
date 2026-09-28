@@ -13,6 +13,8 @@ export interface HeaderProps {
   availableMonths: { monthKey: string; label: string }[];
   settings: Settings;
   onOpenSlackShare: () => void;
+  isAdmin: boolean;
+  onToggleAdmin: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -26,6 +28,8 @@ export const Header: React.FC<HeaderProps> = ({
   availableMonths,
   settings,
   onOpenSlackShare,
+  isAdmin,
+  onToggleAdmin,
 }) => {
   const [timeStr, setTimeStr] = useState('');
 
@@ -112,14 +116,29 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             )}
 
-            {/* 1-Click Slack Button */}
+            {/* Admin Login / Logout Badge */}
             <button
-              onClick={onOpenSlackShare}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-600/20 active:scale-95"
+              onClick={onToggleAdmin}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
+                isAdmin
+                  ? 'bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30'
+                  : 'bg-slate-800 hover:bg-slate-750 border-slate-700 text-slate-300'
+              }`}
+              title={isAdmin ? 'Click to Lock / Logout of Admin Mode' : 'Click to enter Admin PIN'}
             >
-              <IconSlack className="w-4 h-4" />
-              <span>1-Click Slack</span>
+              <span>{isAdmin ? '🔓 Admin Mode (Active)' : '🔒 Admin Login'}</span>
             </button>
+
+            {/* 1-Click Slack Button */}
+            {isAdmin && (
+              <button
+                onClick={onOpenSlackShare}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-600/20 active:scale-95"
+              >
+                <IconSlack className="w-4 h-4" />
+                <span>1-Click Slack</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -162,7 +181,13 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           <button
-            onClick={() => onTabChange('settings')}
+            onClick={() => {
+              if (isAdmin) {
+                onTabChange('settings');
+              } else {
+                onToggleAdmin();
+              }
+            }}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition whitespace-nowrap ${
               currentTab === 'settings'
                 ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
@@ -170,11 +195,17 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <IconSettings className="w-4 h-4" />
-            <span>Admin Settings</span>
+            <span>{isAdmin ? 'Admin Settings' : '🔒 Settings'}</span>
           </button>
 
           <button
-            onClick={() => onTabChange('audit')}
+            onClick={() => {
+              if (isAdmin) {
+                onTabChange('audit');
+              } else {
+                onToggleAdmin();
+              }
+            }}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition whitespace-nowrap ${
               currentTab === 'audit'
                 ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
@@ -182,7 +213,7 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <IconUsers className="w-4 h-4" />
-            <span>Audit Trail</span>
+            <span>{isAdmin ? 'Audit Trail' : '🔒 Audit Trail'}</span>
           </button>
         </div>
       </div>

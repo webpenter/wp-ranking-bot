@@ -74,6 +74,9 @@ export interface Settings {
   slackChannel?: string;
   slackAutoShareOnEnd?: boolean;
   slackWarningMessageTemplate?: string;
+
+  // Admin Security
+  adminPin?: string;                    // default: "webpenter2026"
 }
 
 export interface AuditLogEntry {

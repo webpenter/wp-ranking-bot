@@ -37,6 +37,7 @@ export const DEFAULT_SETTINGS: Settings = {
   slackChannel: '#daily-standup',
   slackAutoShareOnEnd: false,
   slackWarningMessageTemplate: '⚠️ *Policy Notice:* Minus $WP balances result in payroll salary deductions (PKR 20 per minus point). Please ensure on-time attendance for all scheduled Standup & EOD calls.',
+  adminPin: 'webpenter2026',
 };
 
 export const INITIAL_EMPLOYEES: Employee[] = [

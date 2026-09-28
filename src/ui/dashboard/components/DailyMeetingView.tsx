@@ -9,8 +9,10 @@ export interface DailyMeetingViewProps {
   recordsInWeek: AttendanceRecord[];
   employees: Employee[];
   settings: Settings;
+  isAdmin: boolean;
   onSendSlackReport: (meeting: Meeting, records: AttendanceRecord[]) => void;
   onManualEdit: (record: AttendanceRecord, employee: Employee, meeting: Meeting) => void;
+  onRequireAdmin: () => void;
 }
 
 export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
@@ -18,8 +20,10 @@ export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
   recordsInWeek,
   employees,
   settings,
+  isAdmin,
   onSendSlackReport,
   onManualEdit,
+  onRequireAdmin,
 }) => {
   const [meetingTypeFilter, setMeetingTypeFilter] = useState<MeetingType>('standup');
   const [selectedMeetingId, setSelectedMeetingId] = useState<string>('');
@@ -150,13 +154,23 @@ export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
             </div>
 
             {/* Actions: Send to Slack */}
-            <button
-              onClick={() => onSendSlackReport(currentMeeting, currentRecords)}
-              className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-600/20 active:scale-95 shrink-0"
-            >
-              <IconSlack className="w-4 h-4" />
-              <span>Send Report to Slack</span>
-            </button>
+            {isAdmin ? (
+              <button
+                onClick={() => onSendSlackReport(currentMeeting, currentRecords)}
+                className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-emerald-600/20 active:scale-95 shrink-0"
+              >
+                <IconSlack className="w-4 h-4" />
+                <span>Send Report to Slack</span>
+              </button>
+            ) : (
+              <button
+                onClick={onRequireAdmin}
+                className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-750 text-slate-400 hover:text-slate-200 text-xs font-medium border border-slate-700 transition"
+                title="Click to enter Admin PIN and broadcast to Slack"
+              >
+                <span>🔒 Send to Slack</span>
+              </button>
+            )}
           </div>
 
           {/* Metrics summary bar */}
@@ -242,7 +256,7 @@ export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
                       </span>
 
                       {/* Admin edit button */}
-                      {emp && (
+                      {emp && isAdmin && (
                         <button
                           onClick={() => onManualEdit(rec, emp, currentMeeting)}
                           title="Manual Admin Edit"
@@ -289,11 +303,17 @@ export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
                         <div className="flex items-center gap-1.5">
                           {emp && (
                             <button
-                              onClick={() => onManualEdit(rec, emp, currentMeeting)}
-                              title="Mark as Approved Leave or Adjust"
+                              onClick={() => {
+                                if (isAdmin) {
+                                  onManualEdit(rec, emp, currentMeeting);
+                                } else {
+                                  onRequireAdmin();
+                                }
+                              }}
+                              title={isAdmin ? "Mark as Approved Leave or Adjust" : "Enter Admin PIN to edit"}
                               className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded border border-slate-700 text-[11px] font-medium flex items-center gap-1 transition"
                             >
-                              <IconEdit className="w-3 h-3" />
+                              {isAdmin ? <IconEdit className="w-3 h-3" /> : <span>🔒</span>}
                               <span>Edit / Leave</span>
                             </button>
                           )}
@@ -331,11 +351,17 @@ export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
                         <div className="flex items-center gap-1.5">
                           {emp && (
                             <button
-                              onClick={() => onManualEdit(rec, emp, currentMeeting)}
-                              title="Edit Record"
+                              onClick={() => {
+                                if (isAdmin) {
+                                  onManualEdit(rec, emp, currentMeeting);
+                                } else {
+                                  onRequireAdmin();
+                                }
+                              }}
+                              title={isAdmin ? "Edit Record" : "Enter Admin PIN to edit"}
                               className="p-1 text-slate-400 hover:text-slate-200"
                             >
-                              <IconEdit className="w-3.5 h-3.5" />
+                              {isAdmin ? <IconEdit className="w-3.5 h-3.5" /> : <span className="text-xs">🔒</span>}
                             </button>
                           )}
                         </div>
