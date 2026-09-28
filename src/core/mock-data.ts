@@ -5,7 +5,7 @@ export const DEFAULT_SETTINGS: Settings = {
   minimumAttendancePercentage: 80,
   excludeExcusedFromDenominator: true,
   timezone: 'Asia/Karachi',
-  finePerMinusPoint: 20,
+  finePerMinusPoint: 10,
   salaryCurrency: 'PKR',
   weeklyCalculationDay: 6, // Saturday
 
@@ -36,7 +36,7 @@ export const DEFAULT_SETTINGS: Settings = {
   slackWebhookUrl: '',
   slackChannel: '#daily-standup',
   slackAutoShareOnEnd: false,
-  slackWarningMessageTemplate: '⚠️ *Policy Notice:* Minus 🪙 WP coin balances result in payroll salary deductions (PKR 20 per minus point). Please ensure on-time attendance for all scheduled Standup & EOD calls.',
+  slackWarningMessageTemplate: '⚠️ *Policy Notice:* Minus 🪙 WP coin balances result in payroll salary deductions (PKR 10 per minus point). Please ensure on-time attendance for all scheduled Standup & EOD calls.',
   adminPin: 'webpenter2026',
 };
 
