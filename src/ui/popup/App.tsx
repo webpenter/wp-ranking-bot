@@ -156,7 +156,7 @@ export const PopupApp: React.FC = () => {
       <div className="p-2.5 bg-slate-850/60 border border-slate-800 rounded-xl text-[11px] text-slate-400 flex items-start gap-2">
         <IconAlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
         <span>
-          Consistency first: Minimum <strong className="text-amber-300">{settings.minimumAttendancePercentage}%</strong> attendance required for weekly Top 3 qualification. Minus $WP equals salary deductions.
+          Consistency first: Minimum <strong className="text-amber-300">{settings.minimumAttendancePercentage}%</strong> attendance required for weekly Top 3 qualification. Minus 🪙 WP coins equal salary deductions.
         </span>
       </div>
 

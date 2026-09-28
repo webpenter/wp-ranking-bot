@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
-import { WeeklyEmployeeRanking, Settings } from '../../../core/types';
+import { WeeklyEmployeeRanking, Settings, AttendanceRecord } from '../../../core/types';
 import { Badge } from '../../../shared/components/Badge';
 import { Tooltip } from '../../../shared/components/Tooltip';
+import { formatTime12 } from '../../../core/date-utils';
 import { IconTrophy, IconCrown, IconSearch, IconAlertTriangle, IconCheck, IconXCircle, IconClock, IconSparkles } from '../../../shared/icons';
 
 export interface WeeklyLeaderboardProps {
   rankings: WeeklyEmployeeRanking[];
   settings: Settings;
+  recordsInWeek?: AttendanceRecord[];
   onSelectEmployee: (empId: string) => void;
 }
 
 export const WeeklyLeaderboard: React.FC<WeeklyLeaderboardProps> = ({
   rankings,
   settings,
+  recordsInWeek = [],
   onSelectEmployee,
 }) => {
   const [search, setSearch] = useState('');
@@ -260,6 +263,40 @@ export const WeeklyLeaderboard: React.FC<WeeklyLeaderboardProps> = ({
                         )}
                       </div>
                       <div className="text-[11px] text-slate-400">{row.employee.department || 'Team Member'}</div>
+                      
+                      {/* Join Timestamp Badge */}
+                      {(() => {
+                        const empRecs = recordsInWeek.filter((r) => r.employeeId === row.employee.id);
+                        const joinWithTime = empRecs.find((r) => r.joinedAt);
+                        if (joinWithTime && joinWithTime.joinedAt) {
+                          return (
+                            <div className="flex items-center gap-1.5 mt-1 text-[11px] font-mono text-emerald-300">
+                              <IconClock className="w-3 h-3 text-emerald-400 shrink-0" />
+                              <span>Joined: <strong>{formatTime12(joinWithTime.joinedAt)}</strong></span>
+                              {joinWithTime.minutesLate > 0 ? (
+                                <span className="text-amber-400 font-sans text-[10px] font-semibold">({joinWithTime.minutesLate}m late)</span>
+                              ) : (
+                                <span className="text-emerald-400 font-sans text-[10px] font-bold">(On Time)</span>
+                              )}
+                            </div>
+                          );
+                        }
+                        if (empRecs.some((r) => r.status === 'absent')) {
+                          return (
+                            <div className="flex items-center gap-1 mt-1 text-[11px] text-rose-400 font-mono">
+                              <span>❌ Did not join (Absent)</span>
+                            </div>
+                          );
+                        }
+                        if (empRecs.some((r) => r.status === 'excused')) {
+                          return (
+                            <div className="flex items-center gap-1 mt-1 text-[11px] text-cyan-300 font-mono">
+                              <span>🌴 Approved Leave</span>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })()}
                     </td>
 
                     {/* Attendance Ratio & % */}
@@ -350,7 +387,7 @@ export const WeeklyLeaderboard: React.FC<WeeklyLeaderboardProps> = ({
           <IconAlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
           <div>
             <strong className="text-slate-200">Ranking Principle: </strong>
-            Employees must attend at least <span className="text-amber-300 font-semibold">{settings.minimumAttendancePercentage}%</span> of scheduled meetings to qualify for the weekly Top 3 leaderboard. Negative $WP balances are deducted from monthly salary at <span className="text-rose-400 font-semibold">{settings.salaryCurrency} {settings.finePerMinusPoint}</span>/point.
+            Employees must attend at least <span className="text-amber-300 font-semibold">{settings.minimumAttendancePercentage}%</span> of scheduled meetings to qualify for the weekly Top 3 leaderboard. Negative 🪙 WP coin balances are deducted from monthly salary at <span className="text-rose-400 font-semibold">{settings.salaryCurrency} {settings.finePerMinusPoint}</span>/point.
           </div>
         </div>
       </div>

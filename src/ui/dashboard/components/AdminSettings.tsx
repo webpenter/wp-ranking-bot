@@ -218,7 +218,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">On-Time Score ($WP)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">On-Time Score (🪙 WP)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -251,7 +251,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Late Penalty ($WP/Minute)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Late Penalty (🪙 WP/Minute)</label>
                   <input
                     type="number"
                     step="0.1"
@@ -268,7 +268,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Minimum Daily Score Floor ($WP)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Minimum Daily Score Floor (🪙 WP)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -285,7 +285,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Absent Standup Score ($WP)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Absent Standup Score (🪙 WP)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -298,7 +298,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                     }
                     className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:border-brand-500 focus:outline-none"
                   />
-                  <span className="text-[10px] text-slate-500">Standup absence default is 0 $WP.</span>
+                  <span className="text-[10px] text-slate-500">Standup absence default is 0 🪙 WP.</span>
                 </div>
               </div>
 
@@ -355,7 +355,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">On-Time Reward ($WP)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">On-Time Reward (🪙 WP)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -371,7 +371,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Missing EOD Penalty ($WP)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Missing EOD Penalty (🪙 WP)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -385,7 +385,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                     className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white font-bold text-rose-400 focus:border-brand-500 focus:outline-none"
                   />
                   <span className="text-[10px] text-slate-500">
-                    Mandatory minus deduction if missing EOD (e.g. -5.0 $WP).
+                    Mandatory minus deduction if missing EOD (e.g. -5.0 🪙 WP).
                   </span>
                 </div>
 
@@ -480,7 +480,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                     }
                     className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white font-bold text-rose-400 focus:border-brand-500 focus:outline-none"
                   />
-                  <span className="text-[10px] text-slate-500">Salary deduction per negative $WP point.</span>
+                  <span className="text-[10px] text-slate-500">Salary deduction per negative 🪙 WP point.</span>
                 </div>
 
                 <div>

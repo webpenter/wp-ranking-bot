@@ -192,7 +192,7 @@ export const App: React.FC = () => {
 
   // Slack Handlers
   const handleOpenWeeklySlack = () => {
-    const data = generateWeeklySlackReport(currentWeekInfo.label, weeklyRankings, settings);
+    const data = generateWeeklySlackReport(currentWeekInfo.label, weeklyRankings, settings, recordsInWeek, meetingsInWeek);
     setSlackModalData({
       isOpen: true,
       title: `Weekly Leaderboard (${currentWeekInfo.label})`,
@@ -281,6 +281,7 @@ export const App: React.FC = () => {
             <WeeklyLeaderboard
               rankings={weeklyRankings}
               settings={settings}
+              recordsInWeek={recordsInWeek}
               onSelectEmployee={(empId) => setSelectedEmployeeId(empId)}
             />
           </div>

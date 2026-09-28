@@ -91,7 +91,7 @@ export const AuditTrailView: React.FC<AuditTrailViewProps> = ({ auditLogs }) => 
                         <span className="text-slate-400">Score:</span>
                         <span className="line-through text-slate-400 font-mono">{log.oldValue.dailyScore ?? 'N/A'}</span>
                         <span>→</span>
-                        <span className="text-brand-300 font-bold font-mono">{log.newValue.dailyScore ?? 'N/A'} $WP</span>
+                        <span className="text-amber-300 font-bold font-mono">{log.newValue.dailyScore ?? 'N/A'} 🪙 WP</span>
                       </div>
                     </td>
 

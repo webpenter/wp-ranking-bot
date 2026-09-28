@@ -1,7 +1,7 @@
 import { Employee, Meeting, AttendanceRecord, Settings } from './types';
 
 export const DEFAULT_SETTINGS: Settings = {
-  currencySymbol: '$WP',
+  currencySymbol: '🪙 WP',
   minimumAttendancePercentage: 80,
   excludeExcusedFromDenominator: true,
   timezone: 'Asia/Karachi',
@@ -36,7 +36,7 @@ export const DEFAULT_SETTINGS: Settings = {
   slackWebhookUrl: '',
   slackChannel: '#daily-standup',
   slackAutoShareOnEnd: false,
-  slackWarningMessageTemplate: '⚠️ *Policy Notice:* Minus $WP balances result in payroll salary deductions (PKR 20 per minus point). Please ensure on-time attendance for all scheduled Standup & EOD calls.',
+  slackWarningMessageTemplate: '⚠️ *Policy Notice:* Minus 🪙 WP coin balances result in payroll salary deductions (PKR 20 per minus point). Please ensure on-time attendance for all scheduled Standup & EOD calls.',
   adminPin: 'webpenter2026',
 };
 

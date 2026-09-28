@@ -41,7 +41,7 @@ export const MonthlyLeaderboard: React.FC<MonthlyLeaderboardProps> = ({
             </Badge>
           </div>
           <p className="text-xs text-indigo-200/80 mt-1 max-w-2xl">
-            Calculated across all completed weeks of the month. Company rewards are distributed to the Top 3 Grand Champions. Negative $WP balances reflect HR payroll salary deductions.
+            Calculated across all completed weeks of the month. Company rewards are distributed to the Top 3 Grand Champions. Negative 🪙 WP coin balances reflect HR payroll salary deductions.
           </p>
         </div>
 
@@ -248,7 +248,7 @@ export const MonthlyLeaderboard: React.FC<MonthlyLeaderboardProps> = ({
                       {row.weeklyBreakdown.map((wb, idx) => (
                         <span
                           key={idx}
-                          title={`${wb.weekLabel}: ${wb.pointsWP} $WP (${wb.attendancePct}% att)`}
+                          title={`${wb.weekLabel}: ${wb.pointsWP} 🪙 WP (${wb.attendancePct}% att)`}
                           className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold ${
                             wb.pointsWP >= 15 ? 'bg-emerald-500/20 text-emerald-400' : wb.pointsWP >= 0 ? 'bg-blue-500/20 text-blue-400' : 'bg-rose-500/20 text-rose-400'
                           }`}

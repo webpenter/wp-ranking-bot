@@ -196,7 +196,7 @@ export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
             <div className="p-3.5 text-center">
               <span className="text-[11px] text-slate-400 uppercase font-semibold block">Absent / Missing</span>
               <span className="text-lg font-black text-rose-400">
-                {absentRecords.length} <span className="text-xs font-normal text-slate-400">{currentMeeting.type === 'eod' ? '(-5 $WP each)' : ''}</span>
+                {absentRecords.length} <span className="text-xs font-normal text-slate-400">{currentMeeting.type === 'eod' ? '(-5 🪙 WP each)' : ''}</span>
               </span>
             </div>
           </div>
@@ -229,13 +229,13 @@ export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
                           {name}
                           {idx < 3 && settings.enableDailyTop3Bonus && (
                             <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
-                              +{settings.dailyTop3BonusPoints[idx]} $WP Bonus
+                              +{settings.dailyTop3BonusPoints[idx]} {settings.currencySymbol} Bonus
                             </span>
                           )}
                         </div>
                         <div className="text-xs text-slate-400 flex items-center gap-2 mt-0.5 font-mono">
-                          <IconClock className="w-3.5 h-3.5 text-slate-500" />
-                          <span>Joined: <strong className="text-slate-200">{joinTime}</strong></span>
+                          <IconClock className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Joined: <strong className="text-emerald-300 font-bold text-xs">{joinTime}</strong></span>
                         </div>
                       </div>
                     </div>
@@ -251,8 +251,8 @@ export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
                         </Badge>
                       )}
 
-                      <span className={`text-base font-black ${rec.dailyScore >= 0 ? 'text-brand-400' : 'text-rose-400'} min-w-[70px] text-right`}>
-                        {rec.dailyScore >= 0 ? `+${rec.dailyScore.toFixed(1)}` : rec.dailyScore.toFixed(1)} <span className="text-xs font-semibold text-slate-400">{settings.currencySymbol}</span>
+                      <span className={`text-base font-black ${rec.dailyScore >= 0 ? 'text-amber-300' : 'text-rose-400'} min-w-[70px] text-right`}>
+                        {rec.dailyScore >= 0 ? `+${rec.dailyScore.toFixed(1)}` : rec.dailyScore.toFixed(1)} <span className="text-xs font-semibold text-slate-300">{settings.currencySymbol}</span>
                       </span>
 
                       {/* Admin edit button */}
@@ -297,7 +297,7 @@ export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
                         <div>
                           <span className="font-semibold text-rose-200 block">{name}</span>
                           <span className="text-[10px] text-rose-400">
-                            {rec.dailyScore < 0 ? `${rec.dailyScore.toFixed(1)} $WP penalty` : 'Unexcused Absent'}
+                            {rec.dailyScore < 0 ? `${rec.dailyScore.toFixed(1)} ${settings.currencySymbol} penalty • Did not join` : 'Unexcused Absent • Did not join'}
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5">
@@ -345,7 +345,7 @@ export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
                         <div>
                           <span className="font-semibold text-cyan-200 block">{name}</span>
                           <span className="text-[10px] text-cyan-400">
-                            Approved Leave (0 $WP • Excluded from denominator)
+                            Approved Leave (0 {settings.currencySymbol} • Excluded from denominator)
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5">
@@ -378,8 +378,8 @@ export const DailyMeetingView: React.FC<DailyMeetingViewProps> = ({
             <IconAlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
             <span>
               {currentMeeting.type === 'eod'
-                ? `Missing EOD incurs a mandatory penalty of ${settings.eod.absentScore} $WP. Negative points equal salary deductions.`
-                : `Grace period is ${settings.standup.gracePeriodMinutes} minutes. After grace, late penalty is ${settings.standup.latePenalty} $WP/min down to ${settings.standup.minimumDailyScore} $WP floor.`}
+                ? `Missing EOD incurs a mandatory penalty of ${settings.eod.absentScore} ${settings.currencySymbol}. Negative points equal salary deductions.`
+                : `Grace period is ${settings.standup.gracePeriodMinutes} minutes. After grace, late penalty is ${settings.standup.latePenalty} ${settings.currencySymbol}/min down to ${settings.standup.minimumDailyScore} ${settings.currencySymbol} floor.`}
             </span>
           </div>
         </div>

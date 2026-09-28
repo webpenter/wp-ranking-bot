@@ -10,7 +10,7 @@ const MEETINGS_KEY = 'wp_meet_meetings';
 const RECORDS_KEY = 'wp_meet_records';
 const SETTINGS_KEY = 'wp_meet_settings';
 const SCHEMA_VERSION_KEY = 'wp_meet_schema_version';
-const CURRENT_SCHEMA_VERSION = '3.2_fine_20pkr';
+const CURRENT_SCHEMA_VERSION = '3.3_wp_coin_icon';
 
 export class AppRepository {
   public auditLogger: AuditLogger;

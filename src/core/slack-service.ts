@@ -61,7 +61,7 @@ export function generateDailySlackReport(
   md += `⏰ *Scheduled:* ${timeFormatted} | *Attendance:* ${presentRecords.length}/${totalEmployees} (${attendancePct}%)\n`;
   md += `✅ *On Time:* ${onTimeCount} | ⚠️ *Late:* ${lateCount} | ❌ *Absent:* ${absentRecords.length}\n\n`;
 
-  md += `*📋 Attendance & Points Breakdown:*\n`;
+  md += `*📋 Attendance, Join Times & Points Breakdown:*\n`;
   presentRecords.forEach((rec, idx) => {
     const emp = empMap.get(rec.employeeId);
     const name = emp ? emp.name : 'Unknown';
@@ -69,7 +69,7 @@ export function generateDailySlackReport(
     const joinTime = rec.joinedAt ? formatTime12(rec.joinedAt) : 'N/A';
     const statusText = rec.isOnTime ? 'On Time' : `${rec.minutesLate}m late`;
     const scoreSign = rec.dailyScore >= 0 ? `+${rec.dailyScore.toFixed(1)}` : `${rec.dailyScore.toFixed(1)}`;
-    md += `${medal} *${name}* — ${joinTime} (\`${scoreSign} $WP\` • ${statusText})\n`;
+    md += `${medal} *${name}* — ⏰ Joined: *${joinTime}* (\`${scoreSign} 🪙 WP\` • ${statusText})\n`;
   });
 
   if (absentRecords.length > 0) {
@@ -77,22 +77,22 @@ export function generateDailySlackReport(
     absentRecords.forEach((rec) => {
       const emp = empMap.get(rec.employeeId);
       const name = emp ? emp.name : 'Unknown';
-      const penalty = rec.dailyScore < 0 ? ` (\`${rec.dailyScore.toFixed(1)} $WP\` penalty)` : '';
-      md += `• ${name}${penalty}\n`;
+      const penalty = rec.dailyScore < 0 ? ` (\`${rec.dailyScore.toFixed(1)} 🪙 WP\` penalty • Did not join)` : ' (Did not join)';
+      md += `• *${name}*${penalty}\n`;
     });
   }
 
   if (excusedRecords.length > 0) {
-    md += `\n*ℹ️ Excused (${excusedRecords.length}):*\n`;
+    md += `\n*🌴 Approved Leave (${excusedRecords.length}):*\n`;
     excusedRecords.forEach((rec) => {
       const emp = empMap.get(rec.employeeId);
       const name = emp ? emp.name : 'Unknown';
-      md += `• ${name}\n`;
+      md += `• *${name}* (Approved Leave • 0 🪙 WP)\n`;
     });
   }
 
   const warningMsg = settings.slackWarningMessageTemplate || 
-    `⚠️ *Policy Notice:* Minus points equal salary deductions (${settings.finePerMinusPoint} ${settings.salaryCurrency}/minus point). Please be punctual and join all mandatory meetings.`;
+    `⚠️ *Policy Notice:* Minus 🪙 WP coin balances equal payroll salary deductions (${settings.finePerMinusPoint} ${settings.salaryCurrency}/minus point). Please be punctual and join all mandatory meetings.`;
   md += `\n---\n${warningMsg}`;
 
   // Build Slack Block Kit
@@ -133,14 +133,14 @@ export function generateDailySlackReport(
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `*📋 Standup Standings:*\n` + presentRecords.slice(0, 15).map((rec, idx) => {
+        text: `*📋 Standup Standings & Join Timestamps:*\n` + presentRecords.slice(0, 15).map((rec, idx) => {
           const emp = empMap.get(rec.employeeId);
           const name = emp ? emp.name : 'Unknown';
           const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`;
           const joinTime = rec.joinedAt ? formatTime12(rec.joinedAt) : 'N/A';
           const statusText = rec.isOnTime ? 'On Time' : `${rec.minutesLate}m late`;
           const scoreSign = rec.dailyScore >= 0 ? `+${rec.dailyScore.toFixed(1)}` : `${rec.dailyScore.toFixed(1)}`;
-          return `${medal} *${name}* — ${joinTime} (\`${scoreSign} $WP\` • ${statusText})`;
+          return `${medal} *${name}* — ⏰ Joined: *${joinTime}* (\`${scoreSign} 🪙 WP\` • ${statusText})`;
         }).join('\n'),
       },
     },
@@ -151,10 +151,10 @@ export function generateDailySlackReport(
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `*❌ Missing/Absent Attendees:*\n` + absentRecords.map((r) => {
+        text: `*❌ Missing/Absent Attendees (Did Not Join):*\n` + absentRecords.map((r) => {
           const emp = empMap.get(r.employeeId);
-          const penalty = r.dailyScore < 0 ? ` (\`${r.dailyScore.toFixed(1)} $WP\` deduction)` : '';
-          return `• ${emp ? emp.name : 'Unknown'}${penalty}`;
+          const penalty = r.dailyScore < 0 ? ` (\`${r.dailyScore.toFixed(1)} 🪙 WP\` deduction)` : '';
+          return `• *${emp ? emp.name : 'Unknown'}*${penalty} — _Did not join_`;
         }).join('\n'),
       },
     });
@@ -186,32 +186,53 @@ export function generateDailySlackReport(
 }
 
 /**
- * Generate Saturday Weekly Leaderboard Digest for Slack
+ * Generate Saturday Weekly Leaderboard Digest for Slack with Join Timestamps
  */
 export function generateWeeklySlackReport(
   weekLabel: string,
   rankings: WeeklyEmployeeRanking[],
-  settings: Settings
+  settings: Settings,
+  records?: AttendanceRecord[],
+  meetings?: Meeting[]
 ): { payload: SlackPayload; markdownText: string } {
   let md = `*👑 WebPenter Saturday Weekly Leaderboard — ${weekLabel}*\n\n`;
 
   const eligibleList = rankings.filter((r) => r.isEligible);
-  const ineligibleList = rankings.filter((r) => !r.isEligible);
+
+  // Helper to format an employee's join timestamp for the week
+  const getEmployeeJoinDetail = (empId: string): string => {
+    if (!records || records.length === 0) return '';
+    const empRecs = records.filter((rec) => rec.employeeId === empId);
+    if (empRecs.length === 0) return '';
+    const joinWithTime = empRecs.find((rec) => rec.joinedAt);
+    if (joinWithTime && joinWithTime.joinedAt) {
+      const timeStr = formatTime12(joinWithTime.joinedAt);
+      const lateStr = joinWithTime.isOnTime ? 'On Time' : `${joinWithTime.minutesLate}m late`;
+      return ` • ⏰ Joined: *${timeStr}* (${lateStr})`;
+    }
+    const absentRec = empRecs.find((rec) => rec.status === 'absent');
+    if (absentRec) {
+      return ` • ❌ _Did not join_`;
+    }
+    return '';
+  };
 
   md += `*🥇 Top 3 Punctuality Champions:*\n`;
   eligibleList.slice(0, 3).forEach((r, idx) => {
     const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
-    md += `${medal} *${r.employee.name}* — ${r.netPoints.toFixed(1)} $WP | ${r.presentMeetings}/${r.totalScheduledMeetings} (${r.attendancePercentage}%) | Avg: ${r.averagePunctualityScore.toFixed(1)} $WP\n`;
+    const joinDetail = getEmployeeJoinDetail(r.employee.id);
+    md += `${medal} *${r.employee.name}* — \`${r.netPoints.toFixed(1)} 🪙 WP\`${joinDetail} | ${r.presentMeetings}/${r.totalScheduledMeetings} (${r.attendancePercentage}%) | Avg: ${r.averagePunctualityScore.toFixed(1)} 🪙 WP\n`;
   });
 
-  md += `\n*📊 Full Weekly Standings:*\n`;
+  md += `\n*📊 Full Weekly Standings & Join Timestamps:*\n`;
   rankings.forEach((r) => {
     const statusTag = r.isEligible ? '`Eligible`' : '`Not Eligible`';
     const fineText = r.salaryDeductionAmount > 0 ? ` • Fine: *${settings.salaryCurrency} ${r.salaryDeductionAmount}*` : '';
-    md += `${r.rank}. *${r.employee.name}* — ${r.netPoints.toFixed(1)} $WP (${r.attendancePercentage}% att, ${r.averagePunctualityScore.toFixed(1)} avg) [${statusTag}]${fineText}\n`;
+    const joinDetail = getEmployeeJoinDetail(r.employee.id);
+    md += `${r.rank}. *${r.employee.name}* — \`${r.netPoints.toFixed(1)} 🪙 WP\`${joinDetail} (${r.attendancePercentage}% att, ${r.averagePunctualityScore.toFixed(1)} avg) [${statusTag}]${fineText}\n`;
   });
 
-  const warningMsg = `⚠️ *Notice:* Negative $WP balances result in payroll salary deductions (${settings.finePerMinusPoint} ${settings.salaryCurrency}/point). Consistent attendance is required for leaderboard qualification.`;
+  const warningMsg = `⚠️ *Notice:* Negative 🪙 WP coin balances result in payroll salary deductions (${settings.finePerMinusPoint} ${settings.salaryCurrency}/point). Consistent attendance is required for leaderboard qualification.`;
   md += `\n---\n${warningMsg}`;
 
   const blocks: SlackBlock[] = [
@@ -230,7 +251,8 @@ export function generateWeeklySlackReport(
         text: `*🏆 Weekly Top Performers:*\n` +
           eligibleList.slice(0, 3).map((r, i) => {
             const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉';
-            return `${medal} *${r.employee.name}* — \`${r.netPoints.toFixed(1)} $WP\` (${r.attendancePercentage}% attendance • Avg: ${r.averagePunctualityScore.toFixed(1)})`;
+            const joinDetail = getEmployeeJoinDetail(r.employee.id);
+            return `${medal} *${r.employee.name}* — \`${r.netPoints.toFixed(1)} 🪙 WP\`${joinDetail} (${r.attendancePercentage}% attendance • Avg: ${r.averagePunctualityScore.toFixed(1)})`;
           }).join('\n'),
       },
     },
@@ -241,11 +263,12 @@ export function generateWeeklySlackReport(
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `*📋 Standings Summary:*\n` +
+        text: `*📋 Standings Summary & Join Times:*\n` +
           rankings.map((r) => {
             const badge = r.isEligible ? '✅' : '⚠️';
             const fine = r.salaryDeductionAmount > 0 ? ` (Deduction: ${settings.salaryCurrency} ${r.salaryDeductionAmount})` : '';
-            return `${badge} *#${r.rank} ${r.employee.name}*: \`${r.netPoints.toFixed(1)} $WP\` • Att: ${r.attendancePercentage}% • Avg: ${r.averagePunctualityScore.toFixed(1)}${fine}`;
+            const joinDetail = getEmployeeJoinDetail(r.employee.id);
+            return `${badge} *#${r.rank} ${r.employee.name}*: \`${r.netPoints.toFixed(1)} 🪙 WP\`${joinDetail} • Att: ${r.attendancePercentage}% • Avg: ${r.averagePunctualityScore.toFixed(1)}${fine}`;
           }).join('\n'),
       },
     },
@@ -282,7 +305,7 @@ export function generateMonthlySlackReport(
   const top3Winners = monthlyRankings.filter((r) => r.isMonthlyWinner);
   md += `*🌟 MONTHLY GRAND WINNERS (Company Reward Recipients):*\n`;
   top3Winners.forEach((r) => {
-    md += `${r.rewardBadge}: *${r.employee.name}* — Total: \`${r.totalWP.toFixed(1)} $WP\` | Attendance: ${r.attendancePercentage}% | Avg: ${r.averagePunctualityScore.toFixed(1)}\n`;
+    md += `${r.rewardBadge}: *${r.employee.name}* — Total: \`${r.totalWP.toFixed(1)} 🪙 WP\` | Attendance: ${r.attendancePercentage}% | Avg: ${r.averagePunctualityScore.toFixed(1)}\n`;
   });
 
   md += `\n*📑 Monthly Attendance & HR Salary Deductions Summary:*\n`;
@@ -290,7 +313,7 @@ export function generateMonthlySlackReport(
     const fineText = r.totalSalaryDeduction > 0
       ? ` 💸 *Fine Deduction:* ${settings.salaryCurrency} ${r.totalSalaryDeduction}`
       : ' ✨ *Clean Record*';
-    md += `${r.rank}. *${r.employee.name}* — \`${r.totalWP.toFixed(1)} $WP\` (${r.attendancePercentage}% att, ${r.averagePunctualityScore.toFixed(1)} avg)${fineText}\n`;
+    md += `${r.rank}. *${r.employee.name}* — \`${r.totalWP.toFixed(1)} 🪙 WP\` (${r.attendancePercentage}% att, ${r.averagePunctualityScore.toFixed(1)} avg)${fineText}\n`;
   });
 
   const note = settings.monthlyGrandRewardNotes || '🎉 Congratulations to our monthly champions! Company bonuses will be distributed with payroll.';
@@ -310,7 +333,7 @@ export function generateMonthlySlackReport(
       text: {
         type: 'mrkdwn',
         text: `*🏆 Grand Winners & Company Rewards:*\n` +
-          top3Winners.map((r) => `${r.rewardBadge}: *${r.employee.name}* (\`${r.totalWP.toFixed(1)} $WP\` • ${r.attendancePercentage}% att)`).join('\n'),
+          top3Winners.map((r) => `${r.rewardBadge}: *${r.employee.name}* (\`${r.totalWP.toFixed(1)} 🪙 WP\` • ${r.attendancePercentage}% att)`).join('\n'),
       },
     },
     {
@@ -323,7 +346,7 @@ export function generateMonthlySlackReport(
         text: `*📋 Monthly Employee & Payroll Summary:*\n` +
           monthlyRankings.map((r) => {
             const fine = r.totalSalaryDeduction > 0 ? ` • 💸 Deduction: ${settings.salaryCurrency} ${r.totalSalaryDeduction}` : '';
-            return `*#${r.rank} ${r.employee.name}*: \`${r.totalWP.toFixed(1)} $WP\` • ${r.attendancePercentage}% att • Avg: ${r.averagePunctualityScore.toFixed(1)}${fine}`;
+            return `*#${r.rank} ${r.employee.name}*: \`${r.totalWP.toFixed(1)} 🪙 WP\` • ${r.attendancePercentage}% att • Avg: ${r.averagePunctualityScore.toFixed(1)}${fine}`;
           }).join('\n'),
       },
     },
