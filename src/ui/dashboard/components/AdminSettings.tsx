@@ -351,7 +351,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
                     }
                     className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white font-mono focus:border-brand-500 focus:outline-none"
                   />
-                  <span className="text-[10px] text-slate-500">24-hour format e.g. 18:00:00 (6:00 PM)</span>
+                  <span className="text-[10px] text-slate-500">24-hour format e.g. 18:40:00 (6:40 PM)</span>
                 </div>
 
                 <div>

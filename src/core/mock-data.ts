@@ -22,7 +22,7 @@ export const DEFAULT_SETTINGS: Settings = {
 
   eod: {
     enabled: true,
-    startTime: '18:00:00',
+    startTime: '18:40:00',
     onTimeScore: 5,
     gracePeriodMinutes: 2,
     latePenalty: 0.5,

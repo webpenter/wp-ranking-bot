@@ -20,15 +20,25 @@ export class AppRepository {
   }
 
   /**
-   * Initializes the repository with default data if empty or outdated.
+   * Initializes the repository with default data if empty.
+   * Preserves existing employees, meetings, records, and settings across deployments/version updates.
    */
   async initialize(): Promise<void> {
-    const version = await this.storage.getItem<string>(SCHEMA_VERSION_KEY);
     const existingEmployees = await this.storage.getItem<Employee[]>(EMPLOYEES_KEY);
     
-    if (version !== CURRENT_SCHEMA_VERSION || !existingEmployees || existingEmployees.length === 0) {
+    // Only generate initial seed data on fresh/empty storage
+    if (!existingEmployees || existingEmployees.length === 0) {
       await this.resetToSeedData();
+      return;
     }
+
+    // Preserve existing settings while merging any newly added config defaults
+    const existingSettings = await this.storage.getItem<Settings>(SETTINGS_KEY);
+    if (existingSettings) {
+      const merged = { ...DEFAULT_SETTINGS, ...existingSettings };
+      await this.storage.setItem(SETTINGS_KEY, merged);
+    }
+    await this.storage.setItem(SCHEMA_VERSION_KEY, CURRENT_SCHEMA_VERSION);
   }
 
   async resetToSeedData(): Promise<void> {

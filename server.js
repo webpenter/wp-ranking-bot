@@ -35,11 +35,11 @@ if (!fs.existsSync(DATA_DIR)) {
 
 // Default Seed Data
 const DEFAULT_SETTINGS = {
-  currencySymbol: '$WP',
+  currencySymbol: '🪙 WP',
   minimumAttendancePercentage: 80,
   excludeExcusedFromDenominator: true,
   timezone: 'Asia/Karachi',
-  finePerMinusPoint: 20,
+  finePerMinusPoint: 10,
   salaryCurrency: 'PKR',
   weeklyCalculationDay: 6,
   standup: {
@@ -54,7 +54,7 @@ const DEFAULT_SETTINGS = {
   },
   eod: {
     enabled: true,
-    startTime: '18:00:00',
+    startTime: '18:40:00',
     onTimeScore: 5,
     gracePeriodMinutes: 2,
     latePenalty: 0.5,
@@ -68,7 +68,7 @@ const DEFAULT_SETTINGS = {
   slackWebhookUrl: process.env.SLACK_WEBHOOK_URL || '',
   slackChannel: '#daily-standup',
   slackAutoShareOnEnd: true,
-  slackWarningMessageTemplate: '⚠️ *Policy Notice:* Minus $WP balances result in payroll salary deductions (PKR 20 per minus point). Please ensure on-time attendance for all scheduled Standup & EOD calls.',
+  slackWarningMessageTemplate: '⚠️ *Policy Notice:* Minus 🪙 WP coin balances result in payroll salary deductions (PKR 10 per minus point). Please ensure on-time attendance for all scheduled Standup & EOD calls.',
   meetLink: 'https://meet.google.com/jns-arbs-nyv',
 };
 
