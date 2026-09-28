@@ -6,41 +6,45 @@ export function parseISODate(isoString: string): Date {
   return new Date(isoString);
 }
 
-export function formatTime24(date: Date | string): string {
+export function formatTime24(date: Date | string, timeZone: string = 'Asia/Karachi'): string {
   const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
     hour12: false,
+    timeZone,
   });
 }
 
-export function formatTime12(date: Date | string): string {
+export function formatTime12(date: Date | string, timeZone: string = 'Asia/Karachi'): string {
   const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     second: '2-digit',
     hour12: true,
+    timeZone,
   });
 }
 
-export function formatDateShort(date: Date | string): string {
+export function formatDateShort(date: Date | string, timeZone: string = 'Asia/Karachi'): string {
   const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
+    timeZone,
   });
 }
 
-export function formatDateLong(date: Date | string): string {
+export function formatDateLong(date: Date | string, timeZone: string = 'Asia/Karachi'): string {
   const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'short',
     day: 'numeric',
     year: 'numeric',
+    timeZone,
   });
 }
 

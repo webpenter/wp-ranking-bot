@@ -72,7 +72,7 @@ export function generateSeedData(): {
   // Google Meet Code: jns-arbs-nyv
   // ==========================================
   const todayMeetingId = 'meet-su-2026-09-28';
-  const todayScheduled = '2026-09-28T10:00:00.000Z';
+  const todayScheduled = '2026-09-28T10:00:00+05:00';
 
   meetings.push({
     id: todayMeetingId,
@@ -81,20 +81,20 @@ export function generateSeedData(): {
     type: 'standup',
     date: '2026-09-28',
     scheduledStart: todayScheduled,
-    scheduledEnd: '2026-09-28T10:30:00.000Z',
+    scheduledEnd: '2026-09-28T10:30:00+05:00',
     status: 'completed',
     timezone: 'Asia/Karachi',
     createdAt: todayScheduled,
   });
 
-  // 1. Ayub Khokhar — joined 10:02:51 AM (51s past grace -> 1m late -> +4.5 $WP)
+  // 1. Ayub Khokhar — joined 10:02:51 AM (51s past grace -> 1m late -> +4.5 🪙 WP)
   records.push({
     id: `rec-today-${todayMeetingId}-emp-ayub`,
     meetingId: todayMeetingId,
     employeeId: 'emp-ayub',
     meetingType: 'standup',
     status: 'late',
-    joinedAt: '2026-09-28T10:02:51.000Z',
+    joinedAt: '2026-09-28T10:02:51+05:00',
     minutesLate: 1,
     dailyScore: 4.5,
     isOnTime: false,
@@ -103,14 +103,14 @@ export function generateSeedData(): {
     updatedAt: todayScheduled,
   });
 
-  // 2. Fayyaz WebPenter — joined 10:03:21 AM (81s past grace -> 2m late -> +4.0 $WP)
+  // 2. Fayyaz WebPenter — joined 10:03:21 AM (81s past grace -> 2m late -> +4.0 🪙 WP)
   records.push({
     id: `rec-today-${todayMeetingId}-emp-fayyaz-wp`,
     meetingId: todayMeetingId,
     employeeId: 'emp-fayyaz-wp',
     meetingType: 'standup',
     status: 'late',
-    joinedAt: '2026-09-28T10:03:21.000Z',
+    joinedAt: '2026-09-28T10:03:21+05:00',
     minutesLate: 2,
     dailyScore: 4.0,
     isOnTime: false,
@@ -119,14 +119,14 @@ export function generateSeedData(): {
     updatedAt: todayScheduled,
   });
 
-  // 3. Web Penter Inc. — joined 10:03:21 AM (81s past grace -> 2m late -> +4.0 $WP)
+  // 3. Web Penter Inc. — joined 10:03:21 AM (81s past grace -> 2m late -> +4.0 🪙 WP)
   records.push({
     id: `rec-today-${todayMeetingId}-emp-wp-inc`,
     meetingId: todayMeetingId,
     employeeId: 'emp-wp-inc',
     meetingType: 'standup',
     status: 'late',
-    joinedAt: '2026-09-28T10:03:21.000Z',
+    joinedAt: '2026-09-28T10:03:21+05:00',
     minutesLate: 2,
     dailyScore: 4.0,
     isOnTime: false,
@@ -135,14 +135,14 @@ export function generateSeedData(): {
     updatedAt: todayScheduled,
   });
 
-  // 4. Waqar Hussain — joined 10:04:21 AM (141s past grace -> 3m late -> +3.5 $WP)
+  // 4. Waqar Hussain — joined 10:04:21 AM (141s past grace -> 3m late -> +3.5 🪙 WP)
   records.push({
     id: `rec-today-${todayMeetingId}-emp-waqar`,
     meetingId: todayMeetingId,
     employeeId: 'emp-waqar',
     meetingType: 'standup',
     status: 'late',
-    joinedAt: '2026-09-28T10:04:21.000Z',
+    joinedAt: '2026-09-28T10:04:21+05:00',
     minutesLate: 3,
     dailyScore: 3.5,
     isOnTime: false,
@@ -151,14 +151,14 @@ export function generateSeedData(): {
     updatedAt: todayScheduled,
   });
 
-  // 5. Ali Hassan — joined 10:19:23 AM (18m late -> -4.0 $WP)
+  // 5. Ali Hassan — joined 10:19:23 AM (18m late -> -4.0 🪙 WP)
   records.push({
     id: `rec-today-${todayMeetingId}-emp-ali`,
     meetingId: todayMeetingId,
     employeeId: 'emp-ali',
     meetingType: 'standup',
     status: 'late',
-    joinedAt: '2026-09-28T10:19:23.000Z',
+    joinedAt: '2026-09-28T10:19:23+05:00',
     minutesLate: 18,
     dailyScore: -4.0,
     isOnTime: false,
@@ -167,14 +167,14 @@ export function generateSeedData(): {
     updatedAt: todayScheduled,
   });
 
-  // 6. Zahid Khurshid — joined 10:19:23 AM (18m late -> -4.0 $WP)
+  // 6. Zahid Khurshid — joined 10:19:23 AM (18m late -> -4.0 🪙 WP)
   records.push({
     id: `rec-today-${todayMeetingId}-emp-zahid`,
     meetingId: todayMeetingId,
     employeeId: 'emp-zahid',
     meetingType: 'standup',
     status: 'late',
-    joinedAt: '2026-09-28T10:19:23.000Z',
+    joinedAt: '2026-09-28T10:19:23+05:00',
     minutesLate: 18,
     dailyScore: -4.0,
     isOnTime: false,
@@ -183,14 +183,14 @@ export function generateSeedData(): {
     updatedAt: todayScheduled,
   });
 
-  // 7. Ahmad Raza — joined at 10:20:00 AM (19m late -> -4.5 $WP)
+  // 7. Ahmad Raza — joined at 10:20:00 AM (19m late -> -4.5 🪙 WP)
   records.push({
     id: `rec-today-${todayMeetingId}-emp-ahmad`,
     meetingId: todayMeetingId,
     employeeId: 'emp-ahmad',
     meetingType: 'standup',
     status: 'late',
-    joinedAt: '2026-09-28T10:20:00.000Z',
+    joinedAt: '2026-09-28T10:20:00+05:00',
     minutesLate: 19,
     dailyScore: -4.5,
     isOnTime: false,
@@ -199,14 +199,14 @@ export function generateSeedData(): {
     updatedAt: todayScheduled,
   });
 
-  // 8. Mehtab Sain — added right after Ahmad Raza per instructions (joined 10:20:15 AM -> -4.5 $WP)
+  // 8. Mehtab Sain — added right after Ahmad Raza per instructions (joined 10:20:15 AM -> -4.5 🪙 WP)
   records.push({
     id: `rec-today-${todayMeetingId}-emp-mehtab`,
     meetingId: todayMeetingId,
     employeeId: 'emp-mehtab',
     meetingType: 'standup',
     status: 'late',
-    joinedAt: '2026-09-28T10:20:15.000Z',
+    joinedAt: '2026-09-28T10:20:15+05:00',
     minutesLate: 19,
     dailyScore: -4.5,
     isOnTime: false,
@@ -215,7 +215,7 @@ export function generateSeedData(): {
     updatedAt: todayScheduled,
   });
 
-  // 9. Muhammad Sadiq — Unexcused Absent (-5.0 $WP penalty fine)
+  // 9. Muhammad Sadiq — Unexcused Absent (-5.0 🪙 WP penalty fine)
   records.push({
     id: `rec-today-${todayMeetingId}-emp-sadiq`,
     meetingId: todayMeetingId,
@@ -226,12 +226,12 @@ export function generateSeedData(): {
     minutesLate: 0,
     dailyScore: -5.0,
     isOnTime: false,
-    notes: 'Unexcused absence (-5.0 $WP penalty)',
+    notes: 'Unexcused absence (-5.0 🪙 WP penalty)',
     createdAt: todayScheduled,
     updatedAt: todayScheduled,
   });
 
-  // 10. Fayyaz Ahmad — Unexcused Absent (-5.0 $WP penalty fine)
+  // 10. Fayyaz Ahmad — Unexcused Absent (-5.0 🪙 WP penalty fine)
   records.push({
     id: `rec-today-${todayMeetingId}-emp-fayyaz-a`,
     meetingId: todayMeetingId,
@@ -242,7 +242,7 @@ export function generateSeedData(): {
     minutesLate: 0,
     dailyScore: -5.0,
     isOnTime: false,
-    notes: 'Unexcused absence (-5.0 $WP penalty)',
+    notes: 'Unexcused absence (-5.0 🪙 WP penalty)',
     createdAt: todayScheduled,
     updatedAt: todayScheduled,
   });
