@@ -247,6 +247,186 @@ export function generateSeedData(): {
     updatedAt: todayScheduled,
   });
 
+  // ==========================================
+  // EVENING EOD: MONDAY, SEP 28, 2026 (6:40 PM)
+  // Google Meet Code: jns-arbs-nyv
+  // ==========================================
+  const eodMeetingId = 'meet-eod-2026-09-28';
+  const eodScheduled = '2026-09-28T18:40:00+05:00';
+
+  meetings.push({
+    id: eodMeetingId,
+    code: 'meet.google.com/jns-arbs-nyv',
+    title: 'Daily EOD — Monday, Sep 28',
+    type: 'eod',
+    date: '2026-09-28',
+    scheduledStart: eodScheduled,
+    scheduledEnd: '2026-09-28T19:00:00+05:00',
+    status: 'completed',
+    timezone: 'Asia/Karachi',
+    createdAt: eodScheduled,
+  });
+
+  // 1. Ayub Khokhar — Joined 6:40:15 PM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${eodMeetingId}-emp-ayub`,
+    meetingId: eodMeetingId,
+    employeeId: 'emp-ayub',
+    meetingType: 'eod',
+    status: 'present',
+    joinedAt: '2026-09-28T18:40:15+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 6:40:15 PM (On Time)',
+    createdAt: eodScheduled,
+    updatedAt: eodScheduled,
+  });
+
+  // 2. Ahmad Raza — Joined 6:41:05 PM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${eodMeetingId}-emp-ahmad`,
+    meetingId: eodMeetingId,
+    employeeId: 'emp-ahmad',
+    meetingType: 'eod',
+    status: 'present',
+    joinedAt: '2026-09-28T18:41:05+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 6:41:05 PM (On Time within grace)',
+    createdAt: eodScheduled,
+    updatedAt: eodScheduled,
+  });
+
+  // 3. Ali Hassan — Joined 6:41:30 PM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${eodMeetingId}-emp-ali`,
+    meetingId: eodMeetingId,
+    employeeId: 'emp-ali',
+    meetingType: 'eod',
+    status: 'present',
+    joinedAt: '2026-09-28T18:41:30+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 6:41:30 PM (On Time within grace)',
+    createdAt: eodScheduled,
+    updatedAt: eodScheduled,
+  });
+
+  // 4. Fayyaz WebPenter — Joined 6:41:45 PM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${eodMeetingId}-emp-fayyaz-wp`,
+    meetingId: eodMeetingId,
+    employeeId: 'emp-fayyaz-wp',
+    meetingType: 'eod',
+    status: 'present',
+    joinedAt: '2026-09-28T18:41:45+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 6:41:45 PM (On Time within grace)',
+    createdAt: eodScheduled,
+    updatedAt: eodScheduled,
+  });
+
+  // 5. Mehtab Sain — Joined 6:42:00 PM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${eodMeetingId}-emp-mehtab`,
+    meetingId: eodMeetingId,
+    employeeId: 'emp-mehtab',
+    meetingType: 'eod',
+    status: 'present',
+    joinedAt: '2026-09-28T18:42:00+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 6:42:00 PM (On Time within grace)',
+    createdAt: eodScheduled,
+    updatedAt: eodScheduled,
+  });
+
+  // 6. Zahid Khurshid — Absent (-5.0 🪙 WP)
+  records.push({
+    id: `rec-${eodMeetingId}-emp-zahid`,
+    meetingId: eodMeetingId,
+    employeeId: 'emp-zahid',
+    meetingType: 'eod',
+    status: 'absent',
+    joinedAt: undefined,
+    minutesLate: 0,
+    dailyScore: -5.0,
+    isOnTime: false,
+    notes: 'Unexcused absence (-5.0 🪙 WP penalty)',
+    createdAt: eodScheduled,
+    updatedAt: eodScheduled,
+  });
+
+  // 7. Waqar Hussain — Absent (-5.0 🪙 WP)
+  records.push({
+    id: `rec-${eodMeetingId}-emp-waqar`,
+    meetingId: eodMeetingId,
+    employeeId: 'emp-waqar',
+    meetingType: 'eod',
+    status: 'absent',
+    joinedAt: undefined,
+    minutesLate: 0,
+    dailyScore: -5.0,
+    isOnTime: false,
+    notes: 'Unexcused absence (-5.0 🪙 WP penalty)',
+    createdAt: eodScheduled,
+    updatedAt: eodScheduled,
+  });
+
+  // 8. Muhammad Sadiq — Absent (-5.0 🪙 WP)
+  records.push({
+    id: `rec-${eodMeetingId}-emp-sadiq`,
+    meetingId: eodMeetingId,
+    employeeId: 'emp-sadiq',
+    meetingType: 'eod',
+    status: 'absent',
+    joinedAt: undefined,
+    minutesLate: 0,
+    dailyScore: -5.0,
+    isOnTime: false,
+    notes: 'Unexcused absence (-5.0 🪙 WP penalty)',
+    createdAt: eodScheduled,
+    updatedAt: eodScheduled,
+  });
+
+  // 9. Fayyaz Ahmad — Absent (-5.0 🪙 WP)
+  records.push({
+    id: `rec-${eodMeetingId}-emp-fayyaz-a`,
+    meetingId: eodMeetingId,
+    employeeId: 'emp-fayyaz-a',
+    meetingType: 'eod',
+    status: 'absent',
+    joinedAt: undefined,
+    minutesLate: 0,
+    dailyScore: -5.0,
+    isOnTime: false,
+    notes: 'Unexcused absence (-5.0 🪙 WP penalty)',
+    createdAt: eodScheduled,
+    updatedAt: eodScheduled,
+  });
+
+  // 10. Web Penter Inc. — Excused
+  records.push({
+    id: `rec-${eodMeetingId}-emp-wp-inc`,
+    meetingId: eodMeetingId,
+    employeeId: 'emp-wp-inc',
+    meetingType: 'eod',
+    status: 'excused',
+    joinedAt: undefined,
+    minutesLate: 0,
+    dailyScore: 0,
+    isOnTime: false,
+    notes: 'Excused',
+    createdAt: eodScheduled,
+    updatedAt: eodScheduled,
+  });
+
   return {
     employees,
     meetings,
