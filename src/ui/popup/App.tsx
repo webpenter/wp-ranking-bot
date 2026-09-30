@@ -35,12 +35,40 @@ export const PopupApp: React.FC = () => {
       setSettings(stgs);
       setEmployees(emps);
 
-      // Find today's latest meeting
-      const todayStr = new Date().toISOString().split('T')[0];
-      const meetToday = meets.find((m) => m.date === todayStr) || meets[meets.length - 1];
+      // Determine today's meeting (Standup vs EOD)
+      const now = new Date();
+      const currentHour = now.getHours();
+      const isEod = currentHour >= 16;
+      const meetingType = isEod ? 'eod' : 'standup';
+      const typeSettings = isEod ? stgs.eod : stgs.standup;
+      const todayStr = now.toISOString().split('T')[0];
+
+      let meetToday = meets.find((m) => m.date === todayStr && m.type === meetingType);
+      if (!meetToday && typeSettings.enabled) {
+        const scheduledIso = `${todayStr}T${typeSettings.startTime}+05:00`;
+        meetToday = {
+          id: `meet-${meetingType}-${todayStr}`,
+          code: 'meet.google.com/jns-arbs-nyv',
+          title: isEod ? `Daily EOD — ${formatDateShort(todayStr)}` : `Daily Standup — ${formatDateShort(todayStr)}`,
+          type: meetingType,
+          date: todayStr,
+          scheduledStart: scheduledIso,
+          scheduledEnd: scheduledIso,
+          status: 'completed',
+          timezone: 'Asia/Karachi',
+          createdAt: now.toISOString(),
+        };
+        await repository.saveMeeting(meetToday);
+      }
+
+      if (!meetToday) {
+        meetToday = meets[meets.length - 1];
+      }
+
       if (meetToday) {
         setTodayMeeting(meetToday);
-        const mRecs = recs.filter((r) => r.meetingId === meetToday.id);
+        const allRecords = await repository.getAttendanceRecords();
+        const mRecs = allRecords.filter((r) => r.meetingId === meetToday.id);
         setTodayRecords(mRecs);
       }
 

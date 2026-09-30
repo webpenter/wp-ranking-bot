@@ -23,12 +23,13 @@ export function getVisibleParticipantNames(): string[] {
   const ignoredKeywords = new Set([
     'people', 'chat', 'details', 'activities', 'more options', 'mic', 'camera', 
     'turn on captions', 'raise hand', 'leave call', 'meeting details', 'everyone',
-    'search for people', 'add people', 'host controls', 'you', 'host', 'presentation'
+    'search for people', 'add people', 'host controls', 'you', 'host', 'presentation',
+    'send a message', 'in-call messages', 'meeting host'
   ]);
 
   // 1. Participant tray / panel items & role listitems
   const participantElements = document.querySelectorAll(
-    '[data-participant-id], [data-requested-participant-id], [aria-label*="participant" i], div[role="listitem"], span[class*="zWGUib"], div[class*="ZjFb7c"]'
+    '[data-participant-id], [data-requested-participant-id], [aria-label*="participant" i], div[role="listitem"], span[class*="zWGUib"], div[class*="ZjFb7c"], div[class*="poVWob"]'
   );
 
   participantElements.forEach((el) => {
@@ -45,7 +46,7 @@ export function getVisibleParticipantNames(): string[] {
 
   // 2. Video tile overlay labels
   const labelElements = document.querySelectorAll(
-    'div[data-self-name], span[jsname="Wvd9Cc"], div[data-name], div[jsname="skNjhb"]'
+    'div[data-self-name], span[jsname="Wvd9Cc"], div[data-name], div[jsname="skNjhb"], div[class*="poVWob"], div[class*="ZjFb7c"], span[class*="zWGUib"], div[data-participant-id] span'
   );
   labelElements.forEach((el) => {
     const raw = (el.getAttribute('data-self-name') || el.textContent || '').trim();

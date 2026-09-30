@@ -36,10 +36,13 @@
       "host controls",
       "you",
       "host",
-      "presentation"
+      "presentation",
+      "send a message",
+      "in-call messages",
+      "meeting host"
     ]);
     const participantElements = document.querySelectorAll(
-      '[data-participant-id], [data-requested-participant-id], [aria-label*="participant" i], div[role="listitem"], span[class*="zWGUib"], div[class*="ZjFb7c"]'
+      '[data-participant-id], [data-requested-participant-id], [aria-label*="participant" i], div[role="listitem"], span[class*="zWGUib"], div[class*="ZjFb7c"], div[class*="poVWob"]'
     );
     participantElements.forEach((el) => {
       const raw = (el.textContent || el.getAttribute("aria-label") || "").trim();
@@ -51,7 +54,7 @@
       }
     });
     const labelElements = document.querySelectorAll(
-      'div[data-self-name], span[jsname="Wvd9Cc"], div[data-name], div[jsname="skNjhb"]'
+      'div[data-self-name], span[jsname="Wvd9Cc"], div[data-name], div[jsname="skNjhb"], div[class*="poVWob"], div[class*="ZjFb7c"], span[class*="zWGUib"], div[data-participant-id] span'
     );
     labelElements.forEach((el) => {
       const raw = (el.getAttribute("data-self-name") || el.textContent || "").trim();
@@ -976,29 +979,37 @@
     widgetContainer.style.position = "fixed";
     widgetContainer.style.top = "16px";
     widgetContainer.style.right = "16px";
-    widgetContainer.style.zIndex = "99999";
+    widgetContainer.style.zIndex = "2147483647";
     widgetContainer.style.fontFamily = "system-ui, -apple-system, sans-serif";
-    widgetContainer.style.backgroundColor = "rgba(15, 23, 42, 0.92)";
-    widgetContainer.style.backdropFilter = "blur(10px)";
-    widgetContainer.style.border = "1px solid rgba(59, 130, 246, 0.4)";
+    widgetContainer.style.backgroundColor = "rgba(15, 23, 42, 0.95)";
+    widgetContainer.style.backdropFilter = "blur(12px)";
+    widgetContainer.style.border = "1px solid rgba(59, 130, 246, 0.5)";
     widgetContainer.style.borderRadius = "12px";
-    widgetContainer.style.padding = "10px 16px";
+    widgetContainer.style.padding = "8px 14px";
     widgetContainer.style.color = "#f8fafc";
-    widgetContainer.style.boxShadow = "0 10px 25px -5px rgba(0, 0, 0, 0.6)";
+    widgetContainer.style.boxShadow = "0 10px 25px -5px rgba(0, 0, 0, 0.7)";
     widgetContainer.style.display = "flex";
     widgetContainer.style.alignItems = "center";
     widgetContainer.style.gap = "10px";
     widgetContainer.style.fontSize = "12px";
     widgetContainer.style.transition = "all 0.3s ease";
     widgetContainer.innerHTML = `
-    <div style="display:flex; align-items:center; gap:8px;">
+    <div style="display:flex; align-items:center; gap:6px;">
       <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background-color:#22c55e; box-shadow:0 0 8px #22c55e;"></span>
       <strong style="color:#60a5fa; font-weight:700;">WebPenter Tracker</strong>
     </div>
     <div style="height:14px; width:1px; background:rgba(255,255,255,0.2);"></div>
     <span id="wp-widget-status" style="color:#cbd5e1;">Live Tracking Active...</span>
+    <button id="wp-scan-now-btn" style="background:#2563eb; color:#ffffff; border:none; border-radius:6px; padding:3px 8px; font-size:11px; font-weight:700; cursor:pointer; margin-left:4px;">Scan</button>
   `;
     document.body.appendChild(widgetContainer);
+    const btn = document.getElementById("wp-scan-now-btn");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        console.log("[WebPenter Tracker] Manual scan triggered.");
+        scanAndRecordParticipants();
+      });
+    }
   }
   function updateWidgetStatus(text, isLate = false) {
     const el = document.getElementById("wp-widget-status");
@@ -1112,5 +1123,20 @@
     document.addEventListener("DOMContentLoaded", initContentScript);
   } else {
     initContentScript();
+  }
+  setInterval(() => {
+    if (isGoogleMeetCall() && !widgetContainer) {
+      initContentScript();
+    }
+  }, 2e3);
+  if (typeof chrome !== "undefined" && chrome.runtime?.onMessage) {
+    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+      if (msg.type === "FORCE_SCAN_PARTICIPANTS") {
+        scanAndRecordParticipants().then(() => {
+          sendResponse({ success: true, count: recordedEmployeeIds.size });
+        });
+        return true;
+      }
+    });
   }
 })();
