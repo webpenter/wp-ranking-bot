@@ -3,13 +3,16 @@
  */
 
 export function extractMeetingCode(): string | null {
-  const pathname = window.location.pathname;
-  const match = pathname.match(/\/([a-z]{3}-[a-z]{4}-[a-z]{3})/i);
+  const pathname = window.location.pathname.replace(/^\/+/, '');
+  if (!pathname || /^(about|landing|terms|privacy|apps|get-started|help)/i.test(pathname)) {
+    return null;
+  }
+  const match = pathname.match(/([a-z]{3}-[a-z]{4}-[a-z]{3}|[a-z0-9_-]{3,30})/i);
   return match ? match[1] : null;
 }
 
 export function isGoogleMeetCall(): boolean {
-  return window.location.hostname === 'meet.google.com' && extractMeetingCode() !== null;
+  return window.location.hostname.includes('meet.google.com') && extractMeetingCode() !== null;
 }
 
 /**

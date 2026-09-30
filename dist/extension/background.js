@@ -1,1 +1,69 @@
-chrome.runtime.onInstalled.addListener(()=>{console.log("[WebPenter Standup Background] Extension installed successfully."),n()});function n(){chrome.alarms.create("check-standup-alarm",{periodInMinutes:1})}chrome.alarms.onAlarm.addListener(t=>{if(t.name==="check-standup-alarm"){const o=new Date,e=o.getDay(),r=o.getHours(),c=o.getMinutes();e===6&&r===12&&c===0&&chrome.notifications&&chrome.notifications.create("sat-weekly-report",{type:"basic",iconUrl:"icons/icon128.png",title:"👑 Saturday Weekly Standup Report is Ready!",message:"Weekly scores & salary deduction reports are ready for review and Slack dispatch.",priority:2})}});chrome.runtime.onMessage.addListener((t,o,e)=>{if(t.type==="MEET_JOIN_DETECTED")return console.log("[Background] Join detected:",t.payload),chrome.action&&(chrome.action.setBadgeText({text:"LIVE"}),chrome.action.setBadgeBackgroundColor({color:"#22c55e"})),e({received:!0}),!0;if(t.type==="SEND_SLACK_WEBHOOK"){const{webhookUrl:r,payload:c}=t.payload||{};return r?(fetch(r,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(c)}).then(async a=>{if(a.ok)e({success:!0,message:"Report successfully posted to Slack channel!"});else{const s=await a.text();e({success:!1,message:`Slack API error (${a.status}): ${s}`})}}).catch(a=>{e({success:!1,message:`Failed to reach Slack: ${a.message||String(a)}`})}),!0):(e({success:!1,message:"No webhook URL provided."}),!0)}return!0});
+"use strict";
+(() => {
+  // src/extension/background.ts
+  chrome.runtime.onInstalled.addListener(() => {
+    console.log("[WebPenter Standup Background] Extension installed successfully.");
+    setupStandupAlarms();
+  });
+  function setupStandupAlarms() {
+    chrome.alarms.create("check-standup-alarm", {
+      periodInMinutes: 1
+      // Periodic check for standup and Saturday weekly report
+    });
+  }
+  chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === "check-standup-alarm") {
+      const now = /* @__PURE__ */ new Date();
+      const day = now.getDay();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      if (day === 6 && hours === 12 && minutes === 0) {
+        if (chrome.notifications) {
+          chrome.notifications.create("sat-weekly-report", {
+            type: "basic",
+            iconUrl: "icons/icon128.png",
+            title: "\u{1F451} Saturday Weekly Standup Report is Ready!",
+            message: "Weekly scores & salary deduction reports are ready for review and Slack dispatch.",
+            priority: 2
+          });
+        }
+      }
+    }
+  });
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message.type === "MEET_JOIN_DETECTED") {
+      console.log("[Background] Join detected:", message.payload);
+      if (chrome.action) {
+        chrome.action.setBadgeText({ text: "LIVE" });
+        chrome.action.setBadgeBackgroundColor({ color: "#22c55e" });
+      }
+      sendResponse({ received: true });
+      return true;
+    }
+    if (message.type === "SEND_SLACK_WEBHOOK") {
+      const { webhookUrl, payload } = message.payload || {};
+      if (!webhookUrl) {
+        sendResponse({ success: false, message: "No webhook URL provided." });
+        return true;
+      }
+      fetch(webhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }).then(async (res) => {
+        if (res.ok) {
+          sendResponse({ success: true, message: "Report successfully posted to Slack channel!" });
+        } else {
+          const text = await res.text();
+          sendResponse({ success: false, message: `Slack API error (${res.status}): ${text}` });
+        }
+      }).catch((err) => {
+        sendResponse({ success: false, message: `Failed to reach Slack: ${err.message || String(err)}` });
+      });
+      return true;
+    }
+    return true;
+  });
+})();
