@@ -427,6 +427,186 @@ export function generateSeedData(): {
     updatedAt: eodScheduled,
   });
 
+  // ==========================================
+  // MORNING STANDUP: WEDNESDAY, SEP 30, 2026 (10:00 AM)
+  // Google Meet Code: jns-arbs-nyv (8 Participants)
+  // ==========================================
+  const wedStandupId = 'meet-su-2026-09-30';
+  const wedScheduled = '2026-09-30T10:00:00+05:00';
+
+  meetings.push({
+    id: wedStandupId,
+    code: 'meet.google.com/jns-arbs-nyv',
+    title: 'Daily Standup — Wednesday, Sep 30',
+    type: 'standup',
+    date: '2026-09-30',
+    scheduledStart: wedScheduled,
+    scheduledEnd: '2026-09-30T10:30:00+05:00',
+    status: 'completed',
+    timezone: 'Asia/Karachi',
+    createdAt: wedScheduled,
+  });
+
+  // 1. Ayub Khokhar — Joined 10:00:15 AM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${wedStandupId}-emp-ayub`,
+    meetingId: wedStandupId,
+    employeeId: 'emp-ayub',
+    meetingType: 'standup',
+    status: 'present',
+    joinedAt: '2026-09-30T10:00:15+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 10:00:15 AM (On Time)',
+    createdAt: wedScheduled,
+    updatedAt: wedScheduled,
+  });
+
+  // 2. Zahid Khurshid — Joined 10:00:45 AM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${wedStandupId}-emp-zahid`,
+    meetingId: wedStandupId,
+    employeeId: 'emp-zahid',
+    meetingType: 'standup',
+    status: 'present',
+    joinedAt: '2026-09-30T10:00:45+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 10:00:45 AM (On Time)',
+    createdAt: wedScheduled,
+    updatedAt: wedScheduled,
+  });
+
+  // 3. Ali Hassan — Joined 10:01:05 AM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${wedStandupId}-emp-ali`,
+    meetingId: wedStandupId,
+    employeeId: 'emp-ali',
+    meetingType: 'standup',
+    status: 'present',
+    joinedAt: '2026-09-30T10:01:05+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 10:01:05 AM (On Time)',
+    createdAt: wedScheduled,
+    updatedAt: wedScheduled,
+  });
+
+  // 4. Ahmad Raza — Joined 10:01:20 AM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${wedStandupId}-emp-ahmad`,
+    meetingId: wedStandupId,
+    employeeId: 'emp-ahmad',
+    meetingType: 'standup',
+    status: 'present',
+    joinedAt: '2026-09-30T10:01:20+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 10:01:20 AM (On Time)',
+    createdAt: wedScheduled,
+    updatedAt: wedScheduled,
+  });
+
+  // 5. Waqar Hussain — Joined 10:01:35 AM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${wedStandupId}-emp-waqar`,
+    meetingId: wedStandupId,
+    employeeId: 'emp-waqar',
+    meetingType: 'standup',
+    status: 'present',
+    joinedAt: '2026-09-30T10:01:35+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 10:01:35 AM (On Time)',
+    createdAt: wedScheduled,
+    updatedAt: wedScheduled,
+  });
+
+  // 6. Fayyaz WebPenter — Joined 10:01:45 AM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${wedStandupId}-emp-fayyaz-wp`,
+    meetingId: wedStandupId,
+    employeeId: 'emp-fayyaz-wp',
+    meetingType: 'standup',
+    status: 'present',
+    joinedAt: '2026-09-30T10:01:45+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 10:01:45 AM (On Time)',
+    createdAt: wedScheduled,
+    updatedAt: wedScheduled,
+  });
+
+  // 7. Mehtab Sain — Joined 10:01:55 AM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${wedStandupId}-emp-mehtab`,
+    meetingId: wedStandupId,
+    employeeId: 'emp-mehtab',
+    meetingType: 'standup',
+    status: 'present',
+    joinedAt: '2026-09-30T10:01:55+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 10:01:55 AM (On Time)',
+    createdAt: wedScheduled,
+    updatedAt: wedScheduled,
+  });
+
+  // 8. Web Penter Inc. — Joined 10:02:00 AM (+5.0 🪙 WP, On Time)
+  records.push({
+    id: `rec-${wedStandupId}-emp-wp-inc`,
+    meetingId: wedStandupId,
+    employeeId: 'emp-wp-inc',
+    meetingType: 'standup',
+    status: 'present',
+    joinedAt: '2026-09-30T10:02:00+05:00',
+    minutesLate: 0,
+    dailyScore: 5.0,
+    isOnTime: true,
+    notes: 'Joined at 10:02:00 AM (On Time)',
+    createdAt: wedScheduled,
+    updatedAt: wedScheduled,
+  });
+
+  // 9. Muhammad Sadiq — Absent (-5.0 🪙 WP)
+  records.push({
+    id: `rec-${wedStandupId}-emp-sadiq`,
+    meetingId: wedStandupId,
+    employeeId: 'emp-sadiq',
+    meetingType: 'standup',
+    status: 'absent',
+    joinedAt: undefined,
+    minutesLate: 0,
+    dailyScore: -5.0,
+    isOnTime: false,
+    notes: 'Unexcused absence (-5.0 🪙 WP penalty)',
+    createdAt: wedScheduled,
+    updatedAt: wedScheduled,
+  });
+
+  // 10. Fayyaz Ahmad — Absent (-5.0 🪙 WP)
+  records.push({
+    id: `rec-${wedStandupId}-emp-fayyaz-a`,
+    meetingId: wedStandupId,
+    employeeId: 'emp-fayyaz-a',
+    meetingType: 'standup',
+    status: 'absent',
+    joinedAt: undefined,
+    minutesLate: 0,
+    dailyScore: -5.0,
+    isOnTime: false,
+    notes: 'Unexcused absence (-5.0 🪙 WP penalty)',
+    createdAt: wedScheduled,
+    updatedAt: wedScheduled,
+  });
+
   return {
     employees,
     meetings,
